@@ -1,0 +1,41 @@
+{% load thumbnail %}
+
+{% for image in images %}
+    <div class="image">
+        <a href="{{ image.get_absolute_url }}">
+            {% thumbnail image.image "300x300" crop="100%" as im %}
+                <a href="{{ image.get_absolute_url }}">
+                    <img src="{{ im.url }}">
+                </a>
+            {% endthumbnail %}
+        </a>
+        <div class="info">
+            <a href="{{ image.get_absolute_url }}" class="title">
+            {{ image.title }}
+            </a>
+        </div>
+    </div>
+{% endfor %}
+
+{% block domready %}
+    var page = 1;
+    var empty_page = false;
+    var block_request = false;
+    $(window).scroll(function() {
+        var margin = $(document).height() - $(window).height() - 200;
+        if ($(window).scrollTop() > margin && empty_page == false &&
+                block_request == false) {
+                block_request = true;
+                page += 1;
+                $.get('?page=' + page, function(data) {
+                    if(data == '') {
+                        empty_page = true;
+                    }
+                    else {
+                        block_request = false;
+                        $('#image-list').append(data);
+                    }
+                });
+        }
+    });
+{% endblock %}

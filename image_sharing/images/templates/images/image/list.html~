@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}记录的图片{% endblock %}
+
+{% block content %}
+    <h1>记录的图片</h1>
+    <div id="image-list">
+        {% include "images/image/list_ajax.html" %}
+    </div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>{% block title %}{% endblock %}</title>
+		<link href="{% static "css/base.css" %}" rel="stylesheet">
+	</head>
+
+	<body>
+        <div id="header">
+            <span class="logo">图片分享</span>
+            {% if request.user.is_authenticated %}
+                <ul class="menu">
+                    <li {% if section == "dashboard" %} class="selected" {% endif %}>
+                        <a href="{% url "dashboard" %}">主控面板</a>
+                    </li>
+                    <li {% if section == "images" %}class="selected"{% endif %}><a href="{% url "images:list" %}">图片</a></li>
+                    <li {% if section == "people" %}class="selected"{% endif %}>
+                    <a href="#">友人</a>
+                    </li>
+                </ul>
+            {% endif %}
+            <span class="user">
+                {% if request.user.is_authenticated %}
+                    欢迎 {% if request.user.first_name %} {{ request.user.first_name }} {% else %} {{ request.user.username }} {% endif %}, <a href="{% url "logout" %}">注销</a>
+                {% else %}
+                    <a href="{% url "login" %}">登入</a>
+                {% endif %}
+            </span>
+        </div>
+            
+        {% if messages %}
+            {% for message in messages %}
+                <ul class="messages">
+                    <li class="{{ message.tags }}">
+                        {{ message|safe }}
+                        <a id='{{ message.tags }}_{{ forloop.counter }}' href="#" class="close">&times;</a>
+                    </li>
+                </ul>
+            {% endfor %}
+        {% endif %}
+        
+		<div id="content">
+		    {% block content %}
+		    {% endblock %}
+		</div>
+		
+		<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		// <script src=" http://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js "></script>
+		<script src="http://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+        <script>
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+        // 这些是安全的方法，不需要设置X-CSRFToken
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+        
+        $(document).ready(function(){
+            {% block domready %}
+            {% endblock %}
+        });
+        </script>
+        
+        <script>
+            $(document).ready(function(e) {
+                // delete message
+                {% for message in messages %}
+                    $('#{{ message.tags }}_{{ forloop.counter }}').click( function(event){
+                        $('#{{ message.tags }}_{{ forloop.counter }}' ).parent()[0].setAttribute('style', 'display:none');
+                    })
+                {% endfor %}
+            });
+        </script>
+        
+	</body>
+</html>

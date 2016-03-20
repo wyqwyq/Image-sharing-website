@@ -1,0 +1,78 @@
+(function(){
+    var jquery_version = '2.1.4';
+    var site_url = 'http://mysite:8000/';
+    var static_url = site_url + 'static/';
+    
+    var min_width = 90;
+    var min_height = 90;
+    
+    function bookmarklet(msg) {
+        // 加载 CSS
+        var css = jQuery('<link>');
+        css.attr({
+            rel: 'stylesheet',
+            type: 'text/css',
+            href: static_url + 'css/bookmarklet.css?r=' + Math.floor(Math.random()*999999999999999999)
+        });
+        jQuery('head').append(css);
+        
+        // 加载 HTML
+        box_html = '<div id="bookmarklet"><a href="#" id="close">&times;</a><h1>请选择一张图片记录、分享</h1><div class="images"></div></div>';
+        jQuery('body').append(box_html);
+        
+        // 关闭事件
+        jQuery('#bookmarklet #close').click(function(){
+            jQuery('#bookmarklet').remove();
+        });
+        
+        // 找到所有不会太小的jpg图片，显示它们
+        jQuery.each(jQuery('img[src$="jpg"]'), function(index, image) {
+            if (jQuery(image).width() >= min_width && jQuery(image).height() >= min_height){
+                image_url = jQuery(image).attr('src');
+                jQuery('#bookmarklet .images').append('<a href="#"><img src="'+ image_url +'" /></a>');
+            }
+        });
+        // 选中某张图片时，用户编辑相关信息后，可以直接提交给网站
+        jQuery('#bookmarklet .images a').click(function(e){
+            selected_image = jQuery(this).children('img').attr('src');
+            // 先隐藏bookmarklet标签
+            jQuery('#bookmarklet').hide();
+            // 打开新的窗口，编辑图片信息
+            window.open(site_url +'images/create/?url='
+                + encodeURIComponent(selected_image)
+                + '&title='
+                + encodeURIComponent(jQuery('title').text()),
+                '_blank');
+            });
+        };
+    
+    // 判断Jquery是否load
+    if(typeof window.jQuery != 'undefined') {
+        bookmarklet();
+    } else {
+        // 检查是否有冲突
+        var conflict = typeof window.$ != 'undefined';
+        // 创建script标签，将其指向CDN
+        var script = document.createElement('script');
+        // script.setAttribute('src', '//ajax.aspnetcdn.com/ajax/jQuery/jquery-' + jquery_version + '/jquery.min.js');
+        script.setAttribute('src', 'http://apps.bdimg.com/libs/jquery/' + jquery_version + '/jquery.min.js');
+        // 添加到head标签里
+        document.getElementsByTagName('head')[0].appendChild(script);
+        // 等待指导加载好
+        var attempts = 15;
+        (function(){
+            // 再次检查是否加载好
+            if(typeof window.jQuery == 'undefined') {
+                if(--attempts > 0) {
+                    // 在300ms后再次调用自己
+                    window.setTimeout(arguments.callee, 300)
+                } else {
+                    alert('加载Jquery时发生错误')
+                }
+            } else {
+                bookmarklet();
+            }
+        })();
+    }
+    
+})()

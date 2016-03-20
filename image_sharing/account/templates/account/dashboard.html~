@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}主控面板{% endblock %}
+
+{% block content %}
+    <h1>主控面板</h1>
+    <p>欢迎使用主控面板！您可以<a href="{% url "edit" %}">编辑档案</a>或者<a href="{% url "password_change" %}">修给密码</a></p>
+    {% with total_images_created=request.user.images_created.count %}
+        <p>您已经记录分享了{{ total_images_created }} 张图片。</p>
+    {% endwith %}
+    <p>拖拽箭头所指的按钮到您书签工具栏中，以便您分享记录网络上的图片→<a href="javascript:{% include "launcher.js" %}" class="button">记录分享</a><p>
+{% endblock %}
