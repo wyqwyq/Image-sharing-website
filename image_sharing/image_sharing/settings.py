@@ -106,10 +106,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-DEFAULT_FROM_EMAIL = 'test_wyq@163.com'
+DEFAULT_FROM_EMAIL = 'xxxx@163.com'
 EMAIL_HOST = 'smtp.163.com'
-EMAIL_HOST_USER = 'test_wyq@163.com'
-EMAIL_HOST_PASSWORD = 'bbzd1234'
+EMAIL_HOST_USER = 'xxxx@163.com'
+EMAIL_HOST_PASSWORD = 'xxxxx'
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
 
@@ -124,8 +124,8 @@ LOGOUT_URL = reverse_lazy('logout')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
-SOCIAL_AUTH_GITHUB_KEY = '6746074a02e1ead8fd02'
-SOCIAL_AUTH_GITHUB_SECRET = 'abb0e4ea0b6de53b161474cfd7ebf79ddb2df318'
+SOCIAL_AUTH_GITHUB_KEY = 'xxxx'
+SOCIAL_AUTH_GITHUB_SECRET = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'
 SOCIAL_AUTH_GITHUB_SCOPE = ['email', 'follow']
 
 AUTHENTICATION_BACKENDS = (
